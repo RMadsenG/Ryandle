@@ -19,22 +19,16 @@ export default function Home() {
     guess_boxes.push(<Guess key={i} text={guesses[i]} value={color[i % 5]} />)
   }
   return (
-    <main className="max-w-screen-sm mx-auto">
-      <div className="p-3">
-
-        {guess_boxes}
-        <input className={"w-full border-2 p-2 mb-2 " + Values.Current} />
-        <div className="justify-evenly flex">
-          <div>
-            Hello
-          </div> <div>
-            Hello
-          </div> <div>
-            Hello
-          </div>
+    <main className="grow">
+      <div className="p-3 max-w-screen-sm h-full mx-auto flex flex-col">
+        <div id="body" className="grow">
+          {guess_boxes}
         </div>
-        <div contentEditable="true" className={"border-2 p-2 mb-2 " + Values.Current} />
+        <div id="footer">
+          <input className={"w-full border-2 p-2 mb-2 " + Values.Current} />
+        </div>
       </div>
+      {/*
       <div className="flex justify-center">
         <div hidden={true} style={{ width: "80%" }} className="">
           <div className="wrapper">
@@ -54,7 +48,7 @@ export default function Home() {
             />
           </div>
         </div>
-      </div>
+            </div>*/}
 
 
     </main>

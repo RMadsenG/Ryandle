@@ -16,20 +16,21 @@ export default function RootLayout({
   return (
 
     <html lang="en">
-      <body>
-
-        <div className="max-w-screen-lg mx-auto">
-          <header className="p-5 flex items-center justify-center justify-evenly">
-            <p className="flex-1 text-l">
-              Led Zeppelin Heardle
-            </p>
-            <p className="flex-1 flex-grow text-2xl text-center">
-              Leddle
-            </p>
-            <p className="flex-1 text-l text-end">
-              Made by Ryan
-            </p>
-          </header>
+      <body className="flex flex-col h-screen">
+        <div>
+          <div className="max-w-screen-lg mx-auto">
+            <header className="p-5 flex items-center justify-center justify-evenly">
+              <p className="flex-1 text-l">
+                Led Zeppelin Heardle
+              </p>
+              <p className="flex-1 flex-grow text-2xl text-center">
+                Leddle
+              </p>
+              <p className="flex-1 text-l text-end">
+                Made by Ryan
+              </p>
+            </header>
+          </div>
         </div>
         {children}
       </body>
