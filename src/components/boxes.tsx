@@ -6,7 +6,7 @@ export enum Values {
     Next = "border-gray-500"
 }
 
-export function Guess({text, value}: {text: string, value: Values}) {
+export function Guess({text, value}: {text: string|null, value: Values}) {
     let to_render = text ? text : <br></br>;
     return (
         <div className={"border-2 p-2 mb-2 " + value}>
