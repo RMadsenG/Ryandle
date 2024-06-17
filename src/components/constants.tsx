@@ -26,3 +26,6 @@ export const OPTIONS = [
     { "name": "Ween - Fiesta", "url": "/ween/fiesta" },
     { "name": "Ween - Among His Tribe", "url": "/ween/among-his-tribe" }
 ]
+export const GUESSES = 6
+export const TIMES = [2, 3, 5, 8, 12, 18]
+export const MAX_TIME = TIMES[TIMES.length - 1]
