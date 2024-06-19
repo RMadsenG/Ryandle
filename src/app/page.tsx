@@ -2,10 +2,11 @@
 
 import { Values, Guess } from "@/components/boxes";
 import dynamic from "next/dynamic";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { OPTIONS, GUESSES, TIMES, MAX_TIME } from "@/components/constants"
 const Player = dynamic(() => import("../components/player"), { ssr: false });
 import ReactPlayer from 'react-player';
+import ProgressBar from "@/components/progressbar";
 
 enum GameState {
   Playing,
@@ -13,6 +14,7 @@ enum GameState {
   Lose,
 }
 
+const BAR_DIVS = TIMES.map((e, i) => <div key={i} className="absolute border border-gray-500 p-1 my-2" style={{ width: (100 * e / MAX_TIME) + '%' }} />)
 
 const NAMES = OPTIONS.map(e => e['name'])
 const URLS = OPTIONS.map(e => e['url'])
@@ -30,6 +32,7 @@ console.log(CORRECT);
 export default function Home() {
   let player = useRef<ReactPlayer>(null)
   let [ready, setReady] = useState<boolean>(false)
+  let [current_time, setCurrentTime] = useState<number>(0)
   let [game_state, setGameState] = useState<GameState>(GameState.Playing)
   let [guesses, setGuessList] = useState<(string | null)[]>([]);
   let [playing, setPlaying] = useState<boolean>(false);
@@ -37,13 +40,24 @@ export default function Home() {
   let guess_boxes = []
   let end_message = null
 
-  function play_section() {
-    if (playing || !ready) {
+
+  useEffect(() => {
+    if (!playing) {
+      player.current?.seekTo(0)
       return
     }
-    player.current?.seekTo(0)
-    setPlaying(true);
-    setTimeout(() => { setPlaying(false) }, 1000 * (TIMES[guesses.length]))
+    if (game_state == GameState.Playing) {
+      var timer = setTimeout(() => { setPlaying(false) }, 1000 * (TIMES[guesses.length]))
+    }
+    return () => clearTimeout(timer);
+  }, [playing]);
+
+
+  function play_section() {
+    if (!ready) {
+      return
+    }
+    setPlaying(!playing);
   }
   function make_guess() {
     if (!NAMES.includes(current_guess)) {
@@ -53,10 +67,12 @@ export default function Home() {
     setGuessList([...guesses])
 
     if (guesses.length >= GUESSES) {
+      setPlaying(true)
       setGameState(GameState.Lose)
       return
     }
     if (current_guess == CORRECT['name']) {
+      setPlaying(true)
       setGameState(GameState.Win)
     }
   }
@@ -65,9 +81,13 @@ export default function Home() {
     setGuessList([...guesses])
 
     if (guesses.length >= GUESSES) {
+      setPlaying(true)
       setGameState(GameState.Lose)
       return
     }
+  }
+  function updateTime(e: {playedSeconds:number}) {
+    setCurrentTime(e.playedSeconds)
   }
 
   if (game_state == GameState.Lose) {
@@ -98,7 +118,7 @@ export default function Home() {
           </div>
           <div className="flex justify-center">
             <div hidden={game_state == GameState.Playing} className="wrapper" style={{ width: "80%" }} >
-              <Player url={CORRECT['url']} playerRef={player} playing={playing} onReady={() => setReady(true)} />
+              <Player url={CORRECT['url']} playerRef={player} playing={playing} onReady={() => setReady(true)} onProgress={updateTime} />
             </div>
           </div>
         </div>
@@ -111,9 +131,14 @@ export default function Home() {
         </div>
         <div id="footer">
           <div className="flex justify-center">
-            <button onClick={play_section} className="border-2 rounded-lg py-2 px-5">Play</button>
+            <button onClick={play_section} hidden={!ready} className="border-2 rounded-lg py-2 px-5">Play</button>
           </div>
-          <input onChange={(e) => setGuess(e.target.value)} value={current_guess} list="songlist" className={"w-full border-2 p-2 my-2 " + Values.Current} />
+          <div className="relative flex">
+            <div className="w-full border p-1 my-2" />
+            {BAR_DIVS}
+            <ProgressBar playing={playing} time={current_time}/>
+          </div>
+          <input onChange={(e) => setGuess(e.target.value)} value={current_guess} list="songlist" className={"w-full border-2 p-2 my-1 " + Values.Current} />
           <datalist id="songlist" >
             {DATALIST}
           </datalist>

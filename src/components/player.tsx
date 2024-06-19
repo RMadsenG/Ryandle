@@ -1,7 +1,7 @@
 import { MutableRefObject, RefObject } from "react";
 import ReactPlayer from "react-player/lazy";
 
-export default function VideoPlayer({ playerRef, url, playing, onReady }: { playerRef: RefObject<ReactPlayer>, url: string, playing: boolean, onReady: () => void }) {
+export default function VideoPlayer({ playerRef, url, playing, onReady, onProgress }: { playerRef: RefObject<ReactPlayer>, url: string, playing: boolean, onReady: () => void, onProgress: (e: { playedSeconds: number }) => void }) {
     return <ReactPlayer url={"https://soundcloud.com" + url}
         ref={playerRef}
         playing={playing}
@@ -9,6 +9,7 @@ export default function VideoPlayer({ playerRef, url, playing, onReady }: { play
         height={"100%"}
         className='player'
         onReady={onReady}
+        onProgress={onProgress}
         config={{
             soundcloud: {
                 options: {
