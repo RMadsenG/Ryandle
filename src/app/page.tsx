@@ -28,7 +28,7 @@ TODAY.setMilliseconds(0)
 const CORRECT = OPTIONS[Math.floor(TODAY.getTime() / 1000 / 60 / 60 / 24 % OPTIONS.length)]
 console.log(CORRECT);
 
-function getCopyText(guesses: (string | null)[]) {
+function getCopyText(guesses: string[]) {
   function m(guess: (string | null)) {
     var box = "🟥"
     if (!guess) {
@@ -57,7 +57,7 @@ export default function Home() {
   let [ready, setReady] = useState<boolean>(false)
   let [current_time, setCurrentTime] = useState<number>(0)
   let [game_state, setGameState] = useState<GameState>(GameState.Playing)
-  let [guesses, setGuessList] = useState<(string | null)[]>([]);
+  let [guesses, setGuessList] = useState<string[]>([]);
   let [playing, setPlaying] = useState<boolean>(false);
   let [current_guess, setGuess] = useState<string>("");
   let guess_boxes = []
@@ -101,7 +101,7 @@ export default function Home() {
     }
   }
   function skip() {
-    guesses.push(null)
+    guesses.push('')
     setGuessList([...guesses])
 
     if (guesses.length >= GUESSES) {
