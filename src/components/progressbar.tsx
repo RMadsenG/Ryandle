@@ -1,6 +1,5 @@
-import { RefObject, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { MAX_TIME } from "./constants";
-import ReactPlayer from "react-player";
 
 const INCREMENT = .1
 

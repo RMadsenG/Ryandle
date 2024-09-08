@@ -6,7 +6,15 @@ export enum Values {
     Next = "border-gray-500"
 }
 
-export function Guess({text, value}: {text: string|null, value: Values}) {
+export enum ButtonValues {
+    Correct = Values.Correct + " active:border-green-500",
+    Wrong = Values.Wrong + " active:border-rose-600",
+    Current = Values.Current + " active:border-blue-700",
+    Skipped = Values.Skipped + " active:border-purple-700",
+    Next = Values.Next + " active:border-gray-600"
+}
+
+export function Guess({ text, value }: { text: string | null, value: Values }) {
     let to_render = text ? text : <br></br>;
     return (
         <div className={"border-2 p-2 mb-2 " + value}>

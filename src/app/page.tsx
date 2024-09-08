@@ -1,6 +1,6 @@
 'use client'
 
-import { Values, Guess } from "@/components/boxes";
+import { Values, Guess, ButtonValues } from "@/components/boxes";
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import { OPTIONS, GUESSES, TIMES, MAX_TIME } from "@/components/constants"
@@ -28,6 +28,29 @@ TODAY.setMilliseconds(0)
 const CORRECT = OPTIONS[Math.floor(TODAY.getTime() / 1000 / 60 / 60 / 24 % OPTIONS.length)]
 console.log(CORRECT);
 
+function getCopyText(guesses: (string | null)[]) {
+  function m(guess: (string | null)) {
+    var box = "🟥"
+    if (!guess) {
+      return "🟦"
+    }
+    if (guess == CORRECT['name']) {
+      return "🟩"
+    }
+    return box
+  }
+  let text = `
+  Heardle Ryan ${TODAY.getFullYear()}/${TODAY.getMonth()}/${TODAY.getDate()}
+
+  ${guesses.at(-1) == CORRECT['name'] ? "🎉" : "🚫"}${guesses.map(m, guesses).concat(Array<string>(GUESSES - guesses.length).fill('⬛')).join('')}
+
+  #ryaniscool
+  
+  ${window.location.href}
+  `
+  navigator.clipboard.writeText(text)
+}
+
 
 export default function Home() {
   let player = useRef<ReactPlayer>(null)
@@ -48,7 +71,7 @@ export default function Home() {
     if (game_state == GameState.Playing) {
       var timer = setTimeout(() => { setPlaying(false) }, 1000 * (TIMES[guesses.length]))
     } else {
-      var timer = setTimeout(() => { setPlaying(false) }, MAX_TIME * 1000 )
+      var timer = setTimeout(() => { setPlaying(false) }, MAX_TIME * 1000)
     }
     return () => clearTimeout(timer);
   }, [playing]);
@@ -87,7 +110,7 @@ export default function Home() {
       return
     }
   }
-  function updateTime(e: {playedSeconds:number}) {
+  function updateTime(e: { playedSeconds: number }) {
     setCurrentTime(e.playedSeconds)
   }
 
@@ -127,25 +150,27 @@ export default function Home() {
           <div className="p-2">
             {end_message}
           </div>
-          <button className={"border-2 rounded-lg py-2 px-5 " +
-            (game_state == GameState.Win ? Values.Correct : Values.Wrong)}>Share</button>
+          <button onClick={() => getCopyText(guesses)} className={"border-2 rounded-lg py-2 px-5 " +
+            (game_state == GameState.Win ? ButtonValues.Correct : ButtonValues.Wrong)}>Share</button>
         </div>
         <div id="footer">
           <div className="flex justify-center">
-            <button onClick={play_section} hidden={!ready} className="border-2 rounded-lg py-2 px-5">Play</button>
+            <button onClick={play_section} hidden={!ready} className="border-2 rounded-lg py-2 px-5" >{playing ? "Stop" : "Play"}</button>
           </div>
           <div className="relative flex">
             <div className="w-full border p-1 my-2" />
             {BAR_DIVS}
-            <ProgressBar playing={playing} time={current_time}/>
+            <ProgressBar playing={playing} time={current_time} />
           </div>
-          <input onChange={(e) => setGuess(e.target.value)} value={current_guess} list="songlist" className={"w-full border-2 p-2 my-1 " + Values.Current} />
-          <datalist id="songlist" >
-            {DATALIST}
-          </datalist>
-          <div id="selection-controls" className="flex justify-between">
-            <button onClick={skip} className={"border-2 rounded-lg py-2 px-5 " + Values.Skipped}>Skip</button>
-            <button onClick={make_guess} className={"border-2 rounded-lg py-2 px-5 " + Values.Correct}>Submit</button>
+          <div hidden={game_state != GameState.Playing}>
+            <input onChange={(e) => setGuess(e.target.value)} value={current_guess} list="songlist" className={"w-full border-2 p-2 my-1 " + Values.Current} />
+            <datalist id="songlist" >
+              {DATALIST}
+            </datalist>
+            <div id="selection-controls" className="flex justify-between">
+              <button onClick={skip} className={"border-2 rounded-lg py-2 px-5 " + ButtonValues.Skipped}>Skip</button>
+              <button onClick={make_guess} className={"border-2 rounded-lg py-2 px-5 " + ButtonValues.Correct}>Submit</button>
+            </div>
           </div>
         </div>
       </div>
