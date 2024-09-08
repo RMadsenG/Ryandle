@@ -43,11 +43,12 @@ export default function Home() {
 
   useEffect(() => {
     if (!playing) {
-      player.current?.seekTo(0)
       return
     }
     if (game_state == GameState.Playing) {
       var timer = setTimeout(() => { setPlaying(false) }, 1000 * (TIMES[guesses.length]))
+    } else {
+      var timer = setTimeout(() => { setPlaying(false) }, MAX_TIME * 1000 )
     }
     return () => clearTimeout(timer);
   }, [playing]);

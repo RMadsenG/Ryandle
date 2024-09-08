@@ -13,16 +13,25 @@ export default function ProgressBar({ playing, time }: { playing: boolean, time:
         },
         [time]
     )
-    useEffect(
 
+    // One frame after start: increment time 
+    useEffect(
         () => {
+            if (playing) {
+                setFineTime(INCREMENT)
+            }
+        },
+        [playing]
+    )
+    useEffect(
+        () => {
+            // When stopped, reset bar and dont trigger new updates 
             if (!playing) {
+                setFineTime(0)
                 return
             }
-            var timer = setTimeout(() => {
-                setFineTime(fine_time + INCREMENT)
-            },
-                1000 * INCREMENT)
+            // Progress Bar
+            var timer = setTimeout(() => { setFineTime(fine_time + INCREMENT) }, 1000 * INCREMENT)
             return () => clearTimeout(timer)
         },
         [fine_time]
