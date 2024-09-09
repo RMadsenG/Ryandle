@@ -3,7 +3,8 @@ export enum Values {
     Wrong = "border-rose-500",
     Current = "border-blue-600",
     Skipped = "border-purple-600",
-    Next = "border-gray-500"
+    Next = "border-gray-500",
+    Generic = "border-zinc-50"
 }
 
 export enum ButtonValues {
@@ -11,7 +12,8 @@ export enum ButtonValues {
     Wrong = Values.Wrong + " active:border-rose-600",
     Current = Values.Current + " active:border-blue-700",
     Skipped = Values.Skipped + " active:border-purple-700",
-    Next = Values.Next + " active:border-gray-600"
+    Next = Values.Next + " active:border-gray-600",
+    Generic = Values.Generic + " active:border-zinc-400"
 }
 
 export function Guess({ text, value }: { text: string | null, value: Values }) {

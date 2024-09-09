@@ -3,9 +3,13 @@ import { MAX_TIME } from "./constants";
 
 const INCREMENT = .1
 
+
+// TODO: Update with setinterval
+
 export default function ProgressBar({ playing, time }: { playing: boolean, time: number }) {
     const [fine_time, setFineTime] = useState<number>(0)
 
+    // Update time to exact.
     useEffect(
         () => {
             setFineTime(time)
@@ -13,7 +17,7 @@ export default function ProgressBar({ playing, time }: { playing: boolean, time:
         [time]
     )
 
-    // One frame after start: increment time 
+    // One frame after start: increment time to start triggering updates
     useEffect(
         () => {
             if (playing) {
@@ -24,7 +28,7 @@ export default function ProgressBar({ playing, time }: { playing: boolean, time:
     )
     useEffect(
         () => {
-            // When stopped, reset bar and dont trigger new updates 
+            // When stopped, reset bar and stop triggering new updates 
             if (!playing) {
                 setFineTime(0)
                 return

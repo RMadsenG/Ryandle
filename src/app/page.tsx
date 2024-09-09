@@ -53,7 +53,7 @@ function getCopyText(guesses: string[]) {
 
 
 export default function Home() {
-  let player = useRef<ReactPlayer>(null)
+  const player = useRef<ReactPlayer>(null)
   let [ready, setReady] = useState<boolean>(false)
   let [current_time, setCurrentTime] = useState<number>(0)
   let [game_state, setGameState] = useState<GameState>(GameState.Playing)
@@ -63,19 +63,25 @@ export default function Home() {
   let guess_boxes = []
   let end_message = null
 
-
   useEffect(() => {
+    // No need to set timer if not playing
     if (!playing) {
       return
     }
     if (game_state == GameState.Playing) {
-      var timer = setTimeout(() => { setPlaying(false) }, 1000 * (TIMES[guesses.length]))
+      // If playing when a guess is made, extend timer to new time
+      let timePassed = player.current?.getCurrentTime() ?? 0
+      var timer = setTimeout(() => { setPlaying(false); console.log(player.current?.getCurrentTime()) }, 1000 * (TIMES[guesses.length] - timePassed))
     } else {
       var timer = setTimeout(() => { setPlaying(false) }, MAX_TIME * 1000)
     }
     return () => clearTimeout(timer);
-  }, [playing]);
+  }, [playing, guesses]);
 
+  useEffect(() => {
+    // Set time to 0 at end of game. bc there is no pause player.tsx cant reset it
+    player.current?.seekTo(0)
+  }, [game_state]);
 
   function play_section() {
     if (!ready) {
@@ -83,32 +89,48 @@ export default function Home() {
     }
     setPlaying(!playing);
   }
+
+  function endGame(state: GameState) {
+    setPlaying(true)
+    setGameState(state)
+  }
+
+  function checkLoss() {
+    if (guesses.length >= GUESSES) {
+      endGame(GameState.Lose)
+      return true
+    }
+    return false
+  }
+
+  function checkWin() {
+    if (current_guess == CORRECT['name']) {
+      endGame(GameState.Win)
+      return true
+    }
+    return false
+  }
+
   function make_guess() {
     if (!NAMES.includes(current_guess)) {
       return
     }
     guesses.push(current_guess)
+    setGuess("")
     setGuessList([...guesses])
 
-    if (guesses.length >= GUESSES) {
-      setPlaying(true)
-      setGameState(GameState.Lose)
+    if (checkWin()) {
       return
     }
-    if (current_guess == CORRECT['name']) {
-      setPlaying(true)
-      setGameState(GameState.Win)
+    if (checkLoss()) {
+      return
     }
   }
+
   function skip() {
     guesses.push('')
     setGuessList([...guesses])
-
-    if (guesses.length >= GUESSES) {
-      setPlaying(true)
-      setGameState(GameState.Lose)
-      return
-    }
+    checkLoss()
   }
   function updateTime(e: { playedSeconds: number }) {
     setCurrentTime(e.playedSeconds)
@@ -155,7 +177,7 @@ export default function Home() {
         </div>
         <div id="footer">
           <div className="flex justify-center">
-            <button onClick={play_section} hidden={!ready} className="border-2 rounded-lg py-2 px-5" >{playing ? "Stop" : "Play"}</button>
+            <button onClick={play_section} hidden={!ready} className={"border-2 rounded-lg py-2 px-5 " + ButtonValues.Generic} >{playing ? "Stop" : "Play"}</button>
           </div>
           <div className="relative flex">
             <div className="w-full border p-1 my-2" />

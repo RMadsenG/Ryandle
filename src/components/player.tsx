@@ -9,7 +9,7 @@ export default function VideoPlayer({ playerRef, url, playing, onReady, onProgre
         height={"100%"}
         className='player'
         onReady={onReady}
-        onPause={()=>playerRef.current?.seekTo(0)}
+        onPause={() => playerRef.current?.seekTo(0)}
         onProgress={onProgress}
         config={{
             soundcloud: {
