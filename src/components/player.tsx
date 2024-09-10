@@ -1,7 +1,22 @@
 import { MutableRefObject, RefObject } from "react";
 import ReactPlayer from "react-player/lazy";
 
-export default function VideoPlayer({ playerRef, url, playing, onReady, onProgress }: { playerRef: RefObject<ReactPlayer>, url: string, playing: boolean, onReady: () => void, onProgress: (e: { playedSeconds: number }) => void }) {
+export default function VideoPlayer({
+    playerRef,
+    url,
+    playing,
+    onReady,
+    onProgress,
+    setPlaying
+}: {
+    playerRef: RefObject<ReactPlayer>,
+    url: string,
+    playing: boolean,
+    onReady: () => void,
+    onProgress: (e: { playedSeconds: number }) => void,
+    setPlaying: (e: boolean) => void
+}) {
+
     return <ReactPlayer url={"https://soundcloud.com" + url}
         ref={playerRef}
         playing={playing}
@@ -9,7 +24,8 @@ export default function VideoPlayer({ playerRef, url, playing, onReady, onProgre
         height={"100%"}
         className='player'
         onReady={onReady}
-        onPause={() => playerRef.current?.seekTo(0)}
+        onPlay={() => setPlaying(true)}
+        onPause={() => { playerRef.current?.seekTo(0); setPlaying(false) }}
         onProgress={onProgress}
         config={{
             soundcloud: {

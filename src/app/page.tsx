@@ -28,7 +28,7 @@ TODAY.setMilliseconds(0)
 const CORRECT = OPTIONS[Math.floor(TODAY.getTime() / 1000 / 60 / 60 / 24 % OPTIONS.length)]
 console.log(CORRECT);
 
-function getCopyText(guesses: string[]) {
+function boxes(guesses: string[]) {
   function m(guess: (string | null)) {
     var box = "🟥"
     if (!guess) {
@@ -39,10 +39,14 @@ function getCopyText(guesses: string[]) {
     }
     return box
   }
+  return guesses.map(m, guesses).concat(Array<string>(GUESSES - guesses.length).fill('⬛')).join('')
+}
+
+function getCopyText(guesses: string[]) {
   let text = `
   Heardle Ryan ${TODAY.getFullYear()}/${TODAY.getMonth()}/${TODAY.getDate()}
 
-  ${guesses.at(-1) == CORRECT['name'] ? "🎉" : "🚫"}${guesses.map(m, guesses).concat(Array<string>(GUESSES - guesses.length).fill('⬛')).join('')}
+  ${guesses.at(-1) == CORRECT['name'] ? "🎉" : "🚫"}${boxes(guesses)}
 
   #ryaniscool
   
@@ -71,7 +75,7 @@ export default function Home() {
     if (game_state == GameState.Playing) {
       // If playing when a guess is made, extend timer to new time
       let timePassed = player.current?.getCurrentTime() ?? 0
-      var timer = setTimeout(() => { setPlaying(false); console.log(player.current?.getCurrentTime()) }, 1000 * (TIMES[guesses.length] - timePassed))
+      var timer = setTimeout(() => { setPlaying(false); }, 1000 * (TIMES[guesses.length] - timePassed))
     } else {
       var timer = setTimeout(() => { setPlaying(false) }, MAX_TIME * 1000)
     }
@@ -137,9 +141,15 @@ export default function Home() {
   }
 
   if (game_state == GameState.Lose) {
-    end_message = "Better Luck Next Time :("
+    end_message = <>
+      <p>Better Luck Next Time :(</p>
+      <p>{boxes(guesses)}</p>
+    </>
   } else if (game_state == GameState.Win) {
-    end_message = "Yay"
+    end_message = <>
+      <p>Yay!</p>
+      <p>{boxes(guesses)}</p>
+    </>
   }
 
   for (var i = 0; i < GUESSES; i++) {
@@ -164,7 +174,7 @@ export default function Home() {
           </div>
           <div className="flex justify-center">
             <div hidden={game_state == GameState.Playing} className="wrapper" style={{ width: "80%" }} >
-              <Player url={CORRECT['url']} playerRef={player} playing={playing} onReady={() => setReady(true)} onProgress={updateTime} />
+              <Player url={CORRECT['url']} playerRef={player} playing={playing} onReady={() => setReady(true)} onProgress={updateTime} setPlaying={setPlaying} />
             </div>
           </div>
         </div>
