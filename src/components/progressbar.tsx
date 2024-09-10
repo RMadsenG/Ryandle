@@ -17,28 +17,23 @@ export default function ProgressBar({ playing, time }: { playing: boolean, time:
         [time]
     )
 
-    // One frame after start: increment time to start triggering updates
     useEffect(
         () => {
             if (playing) {
-                setFineTime(INCREMENT)
+                const timer = setInterval(
+                    () => {
+                        setFineTime(prev_time => prev_time + INCREMENT)
+                    },
+                    INCREMENT * 1000
+                );
+                return () => clearInterval(timer)
+            } else {
+                setFineTime(0)
             }
         },
         [playing]
     )
-    useEffect(
-        () => {
-            // When stopped, reset bar and stop triggering new updates 
-            if (!playing) {
-                setFineTime(0)
-                return
-            }
-            // Progress Bar
-            var timer = setTimeout(() => { setFineTime(fine_time + INCREMENT) }, 1000 * INCREMENT)
-            return () => clearTimeout(timer)
-        },
-        [fine_time]
-    )
+
     return <>
         <div className="absolute border bg-gray-500 py-1 my-2" style={{ width: (100 * fine_time / MAX_TIME) + "%" }} />
     </>
