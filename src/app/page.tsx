@@ -7,6 +7,7 @@ import { OPTIONS, GUESSES, TIMES, MAX_TIME } from "@/components/constants"
 const Player = dynamic(() => import("../components/player"), { ssr: false });
 import ReactPlayer from 'react-player';
 import ProgressBar from "@/components/progressbar";
+import { DataList } from "@/components/datalist";
 
 enum GameState {
   Playing,
@@ -64,6 +65,7 @@ export default function Home() {
   let [guesses, setGuessList] = useState<string[]>([]);
   let [playing, setPlaying] = useState<boolean>(false);
   let [current_guess, setGuess] = useState<string>("");
+  let [input_focus, setInputFocus] = useState<boolean>(false);
   let guess_boxes = []
   let end_message = null
 
@@ -194,11 +196,9 @@ export default function Home() {
             {BAR_DIVS}
             <ProgressBar playing={playing} time={current_time} />
           </div>
-          <div hidden={game_state != GameState.Playing}>
-            <input onChange={(e) => setGuess(e.target.value)} value={current_guess} list="songlist" className={"w-full border-2 p-2 my-1 " + Values.Current} />
-            <datalist id="songlist" >
-              {DATALIST}
-            </datalist>
+          <div hidden={game_state != GameState.Playing} >
+            <DataList options={NAMES} searchText={current_guess} hidden={!input_focus} setText={setGuess} />
+            <input onBlur={(e) => setInputFocus(false)} onFocus={() => setInputFocus(true)} onChange={(e) => setGuess(e.target.value)} value={current_guess} list="songlist" className={"w-full border-2 p-2 my-1 " + Values.Current} />
             <div id="selection-controls" className="flex justify-between">
               <button onClick={skip} className={"border-2 rounded-lg py-2 px-5 " + ButtonValues.Skipped}>Skip</button>
               <button onClick={make_guess} className={"border-2 rounded-lg py-2 px-5 " + ButtonValues.Correct}>Submit</button>
