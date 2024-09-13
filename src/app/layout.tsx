@@ -3,8 +3,8 @@ import "./globals.css";
 
 
 export const metadata: Metadata = {
-  title: "Leddle",
-  description: "Led Zeppelin Heardle",
+  title: "Heardle",
+  description: "Its a Heardle",
 };
 
 export default function RootLayout({
@@ -20,18 +20,22 @@ export default function RootLayout({
           <div className="max-w-screen-lg mx-auto">
             <header className="p-5 flex items-center justify-center justify-evenly">
               <p className="flex-1 text-l">
-                Ryan's Heardle
+                Random Songs
               </p>
-              <p className="flex-1 flex-grow text-2xl text-center">
+              <a href="/" className="flex-1 flex-grow text-2xl text-center" >
                 Ryandle
-              </p>
+              </a>
               <p className="flex-1 text-l text-end">
-                Made by Ryan
+                Made by Ryan <a href="credits">ⓘ</a>
               </p>
             </header>
           </div>
         </div>
-        {children}
+        <main className="grow">
+          <div className="p-3 max-w-screen-sm h-full mx-auto flex flex-col justify-between">
+            {children}
+          </div>
+        </main>
       </body>
     </html >
   );

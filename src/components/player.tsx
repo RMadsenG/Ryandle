@@ -7,14 +7,16 @@ export default function VideoPlayer({
     playing,
     onReady,
     onProgress,
-    setPlaying
+    setPlaying,
+    setError
 }: {
     playerRef: RefObject<ReactPlayer>,
     url: string,
     playing: boolean,
     onReady: () => void,
     onProgress: (e: { playedSeconds: number }) => void,
-    setPlaying: (e: boolean) => void
+    setPlaying: (e: boolean) => void,
+    setError: (e: boolean) => void
 }) {
 
     return <ReactPlayer url={"https://soundcloud.com" + url}
@@ -24,6 +26,7 @@ export default function VideoPlayer({
         height={"100%"}
         className='player'
         onReady={onReady}
+        onError={(e)=>{setError(true)}}
         onPlay={() => setPlaying(true)}
         onPause={() => { playerRef.current?.seekTo(0); setPlaying(false) }}
         onProgress={onProgress}

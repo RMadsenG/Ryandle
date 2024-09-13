@@ -60,6 +60,7 @@ function getCopyText(guesses: string[]) {
 export default function Home() {
   const player = useRef<ReactPlayer>(null)
   let [ready, setReady] = useState<boolean>(false)
+  let [error, setError] = useState<boolean>(false)
   let [current_time, setCurrentTime] = useState<number>(0)
   let [game_state, setGameState] = useState<GameState>(GameState.Playing)
   let [guesses, setGuessList] = useState<string[]>([]);
@@ -168,44 +169,43 @@ export default function Home() {
     guess_boxes.push(<Guess key={i} text={guesses[i]} value={color} />)
   }
   return (
-    <main className="grow">
-      <div className="p-3 max-w-screen-sm h-full mx-auto flex flex-col justify-between">
-        <div id="body">
-          <div hidden={game_state !== GameState.Playing}>
-            {guess_boxes}
-          </div>
-          <div className="flex justify-center">
-            <div hidden={game_state == GameState.Playing} className="wrapper" style={{ width: "80%" }} >
-              <Player url={CORRECT['url']} playerRef={player} playing={playing} onReady={() => setReady(true)} onProgress={updateTime} setPlaying={setPlaying} />
-            </div>
-          </div>
+    <>
+      <div id="body">
+        <div hidden={game_state !== GameState.Playing}>
+          {guess_boxes}
         </div>
-        <div hidden={game_state == GameState.Playing} id="result" className="text-center">
-          <div className="p-2">
-            {end_message}
-          </div>
-          <button onClick={() => getCopyText(guesses)} className={"border-2 rounded-lg py-2 px-5 " +
-            (game_state == GameState.Win ? ButtonValues.Correct : ButtonValues.Wrong)}>Share</button>
-        </div>
-        <div id="footer">
-          <div className="flex justify-center">
-            <button onClick={play_section} hidden={!ready} className={"border-2 rounded-lg py-2 px-5 " + ButtonValues.Generic} >{playing ? "Stop" : "Play"}</button>
-          </div>
-          <div className="relative flex">
-            <div className="w-full border p-1 my-2" />
-            {BAR_DIVS}
-            <ProgressBar playing={playing} time={current_time} />
-          </div>
-          <div hidden={game_state != GameState.Playing} >
-            <DataList options={NAMES} searchText={current_guess} hidden={!input_focus} setText={setGuess} />
-            <input onBlur={(e) => setInputFocus(false)} onFocus={() => setInputFocus(true)} onChange={(e) => setGuess(e.target.value)} value={current_guess} list="songlist" className={"w-full border-2 p-2 my-1 " + Values.Current} />
-            <div id="selection-controls" className="flex justify-between">
-              <button onClick={skip} className={"border-2 rounded-lg py-2 px-5 " + ButtonValues.Skipped}>Skip</button>
-              <button onClick={make_guess} className={"border-2 rounded-lg py-2 px-5 " + ButtonValues.Correct}>Submit</button>
-            </div>
+        <div className="flex justify-center">
+          <div hidden={game_state == GameState.Playing} className="wrapper" style={{ width: "80%" }} >
+            <Player url={CORRECT['url']} playerRef={player} playing={playing} onReady={() => setReady(true)} onProgress={updateTime} setPlaying={setPlaying} setError={setError} />
           </div>
         </div>
       </div>
-    </main>
+      <div hidden={game_state == GameState.Playing} id="result" className="text-center">
+        <div className="p-2">
+          {end_message}
+        </div>
+        <button onClick={() => getCopyText(guesses)} className={"border-2 rounded-lg py-2 px-5 " +
+          (game_state == GameState.Win ? ButtonValues.Correct : ButtonValues.Wrong)}>Share</button>
+      </div>
+      <div id="footer">
+        <div className="flex justify-center">
+          <button disabled hidden={!error} className={"border-2 rounded-lg py-2 px-5 " + ButtonValues.Wrong} >Error! Please Refresh</button>
+          <button onClick={play_section} hidden={!ready || error} className={"border-2 rounded-lg py-2 px-5 " + ButtonValues.Generic} >{playing ? "Stop" : "Play"}</button>
+        </div>
+        <div className="relative flex">
+          <div className="w-full border p-1 my-2" />
+          {BAR_DIVS}
+          <ProgressBar playing={playing} time={current_time} />
+        </div>
+        <div hidden={game_state != GameState.Playing} >
+          <DataList options={NAMES} searchText={current_guess} hidden={!input_focus} setText={setGuess} />
+          <input onBlur={(e) => setInputFocus(false)} onFocus={() => setInputFocus(true)} onChange={(e) => setGuess(e.target.value)} value={current_guess} list="songlist" className={"w-full border-2 p-2 my-1 " + Values.Current} />
+          <div id="selection-controls" className="flex justify-between">
+            <button onClick={skip} className={"border-2 rounded-lg py-2 px-5 " + ButtonValues.Skipped}>Skip</button>
+            <button onClick={make_guess} className={"border-2 rounded-lg py-2 px-5 " + ButtonValues.Correct}>Submit</button>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
