@@ -27,7 +27,7 @@ export default function RootLayout({
                 Ryandle
               </Link>
               <p className="flex-1 text-l text-end">
-                Made by Ryan <Link href="credits">ⓘ</Link>
+                Made by Ryan <Link href="/credits">ⓘ</Link>
               </p>
             </header>
           </div>
