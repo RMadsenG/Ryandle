@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Link from "next/link";
 
 
 export const metadata: Metadata = {
@@ -22,11 +23,11 @@ export default function RootLayout({
               <p className="flex-1 text-l">
                 Random Songs
               </p>
-              <a href="/" className="flex-1 flex-grow text-2xl text-center" >
+              <Link href="/" className="flex-1 flex-grow text-2xl text-center" >
                 Ryandle
-              </a>
+              </Link>
               <p className="flex-1 text-l text-end">
-                Made by Ryan <a href="credits">ⓘ</a>
+                Made by Ryan <Link href="credits">ⓘ</Link>
               </p>
             </header>
           </div>

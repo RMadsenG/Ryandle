@@ -44,15 +44,14 @@ function boxes(guesses: string[]) {
 }
 
 function getCopyText(guesses: string[]) {
-  let text = `
-  Heardle Ryan ${TODAY.getFullYear()}/${TODAY.getMonth()}/${TODAY.getDate()}
+  let text = `Heardle Ryan ${TODAY.getFullYear()}/${TODAY.getMonth()}/${TODAY.getDate()}
 
-  ${guesses.at(-1) == CORRECT['name'] ? "🎉" : "🚫"}${boxes(guesses)}
+${guesses.at(-1) == CORRECT['name'] ? "🎉" : "🚫"}${boxes(guesses)}
 
-  #ryaniscool
+#ryaniscool
   
-  ${window.location.href}
-  `
+${window.location.href}
+`
   navigator.clipboard.writeText(text)
 }
 
